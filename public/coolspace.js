@@ -304,7 +304,7 @@ function Avatar(map) {
 	
 	this.init = function() {
 		this.map = map;
-
+		this.dir = "S";
 		this.bubbleElem = null;
 		this.bubbleTimer = null;
 	
