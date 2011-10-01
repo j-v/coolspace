@@ -2,8 +2,10 @@
 function joinRoomRequest() {
 	now.requestRoomData(function (obj) {
 		console.log("Joined room:", obj);
-		row.sendUserAction({
-			"userID": userID
+		now.sendUserAction({
+			userID: userID,
+			action: 'spawn',
+			params: {}
 		});
 	});
 
