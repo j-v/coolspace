@@ -1,6 +1,10 @@
 
 function joinRoomRequest() {
 	now.requestRoomData(function (obj) {
+		for (var i=0; i < obj.user.length; i++) {
+			var u = obj.user[i];
+			floor.addPlayer(u.x, u.y, u.username);
+		}
 		console.log("Joined room:", obj);
 		now.sendUserAction({
 			userID: userID,

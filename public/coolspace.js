@@ -6,7 +6,7 @@ WEST = 'W';
 $(init);
 var isRoomDataReceived = false;
 
-var gridSize = 40;
+var gridSize = 60;
 var wall;
 var floor;
 var userID = "user" + Math.random();
@@ -41,7 +41,7 @@ function WallMap (container) {
 	this.init = function() {
 		this.container = container;
 		this.xdim = 10;
-		this.ydim = 3;
+		this.ydim = 2;
 
 		
 		this.elem = $('<div class="wall">').appendTo(container).css({
@@ -185,6 +185,7 @@ function FloorMap (container) {
 	this.serverActionMove = function(id, dir) {
 		console.log(this.avatars);
 		var av = this.avatars[id];
+		av.dir = dir;
 		switch (dir) {
 			case NORTH:
 				av.y--;
@@ -213,7 +214,7 @@ function FloorMap (container) {
 	this.serverActionSpawn = function(id, x, y) {
 		if (id == userID) {
 			// The spawn is about the player
-			this.addPlayerAvatar(x, y, id, "avatar.png");
+			this.addPlayerAvatar(x, y, id, "afss.png");
 			return;
 		}
 		this.addAvatar(x, y, id, "avatar.png");
@@ -300,8 +301,6 @@ function Avatar(map) {
 	this.init = function() {
 		this.map = map;
 
-
-
 		this.bubbleElem = null;
 		this.bubbleTimer = null;
 	
@@ -309,14 +308,23 @@ function Avatar(map) {
 
 	};
 	
+	this.updateImage = function() {
+		console.log("setting image to ", this.image);
+		this.elem.css("background-image", "url(" + this.image + ")");
+	}
+	
 	this.move = function() {
 		
 		this.inTransit = true;
+		this.image = this.getMovingImage();
+		this.updateImage();
 		this.elem.animate(this.getOffsets(), 600, 'linear', $.proxy(this, "moveComplete"));
 	}
 	
 	this.moveComplete = function() {
 		this.inTransit = false;
+		this.image = this.getStandingImage();
+		this.updateImage();
 	}
 	
 	this.sayBubble = function(text) {
@@ -340,7 +348,15 @@ function Avatar(map) {
 
 		this.bubbleTimer = setTimeout($.proxy(this, "onBubbleExpire"), 3000);
 		
-	}
+	};
+	
+	this.getStandingImage = function() {
+		return 'afs' + this.dir.toLowerCase() + '.png';
+	};
+	
+	this.getMovingImage = function() {
+		return 'afm' + this.dir.toLowerCase() + '.png';
+	};
 	
 	this.onBubbleExpire = function() {
 
@@ -349,7 +365,7 @@ function Avatar(map) {
 		});
 
 		this.bubbleElem = null;
-	}
+	};
 	this.init();
 }
 Avatar.prototype = new CellObject();
