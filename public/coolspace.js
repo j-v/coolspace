@@ -14,8 +14,12 @@ function init() {
 
 	wall = new WallMap('#map-container');
 	floor = new FloorMap('#map-container');
-	floor.addFurniture(3, 3, 3, 1, "table.png");
-	
+	floor.addFurniture(7, 1, 2, 1, "couch.png");
+	floor.addFurniture(0, 4, 2, 1, "box.png");
+	floor.addFurniture(7, 4, 2, 1, "cards.png");
+	floor.addFurniture(4, 3, 2, 1, "octopus.png");
+
+	//floor.addFurniture();
 	
 	//floor.addPlayerAvatar(4,1, "user1", "avatar.png");
 	//floor.addAvatar(5,1, "user2", "avatar.png");
