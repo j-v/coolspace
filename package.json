@@ -4,6 +4,7 @@
   "dependencies": {
     "express": "2.2.0",
     "now": "0.7.5",
-    "redis-url": "0.0.1"
+    "redis-url": "0.0.1",
+    "jade": "0.16.2"
   }
 }

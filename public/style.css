@@ -1,0 +1,28 @@
+.wall {
+	position: relative;
+	background-image: url(wall.png);
+}
+.floor {
+	position: relative;
+	background-image: url(floor.png);
+}
+
+
+
+.floorobject {
+	position: absolute;
+	background-position: bottom center;
+}
+
+
+.bubble {
+	background-color: rgba(255, 255, 255, 0.4);
+	color: rgba(25, 25, 25, 0.8);
+	font-family: sans-serif;
+	font-weight: bold;
+	position: absolute;
+	display: inline;
+	padding: 8px;
+	border-radius: 15px;
+	
+}

@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>CoolSpace</title>
+<script type="text/javascript" src="/nowjs/now.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+//now.js test
+$(document).ready(function() {
+    $("#send-button").click(function(){
+        now.distributeMessage($("#text-input").val());
+        $("#text-input").val("");
+    });
+});
+
+now.receiveMessage = function(name, message){
+  $("#messages").append("<br>" + name + ": " + message);
+}
+</script>
+</head>
+<body>
+<h1>CoolSpace</h1>
+<input type="text" id="text-input"></input>
+<button id="send-button">send</button>
+<div id="messages">
+</div>
+</body>
+</html>
