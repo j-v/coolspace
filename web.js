@@ -14,7 +14,8 @@ var auth = require('./auth.js')
 
 var app = express.createServer(express.logger(),
 				express.static(__dirname + '/public'));
-var everyone = nowjs.initialize(yourHttpServer, 
+//var everyone = nowjs.initialize(app);
+var everyone = nowjs.initialize(app, 
 			{socketio: {transports: ['xhr-polling', 'jsonp-polling']}});
 
 //now.js test

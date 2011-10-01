@@ -41,7 +41,8 @@ exports.RoomMap = function(params) {
 		//add to clients array
 		//update map
 		client ={username:who,x:x,y:y};
-		clients['who'] = client;
+		console.log('new client ' + who);
+		clients[who] = client;
 
 		this.numClients++;
 		return true;
@@ -87,18 +88,21 @@ exports.RoomMap = function(params) {
 		
 		var client = clients[who];
 		
-		if (client == undefined)
-			return false; //TODO
+		//if (client == undefined)
+		//	return false; //TODO
 		
 		var x = client.x;
 		var y = client.y;
 		var pos = getPos(x,y);
 		var mPos = getMovePos(x,y,dir);
-		floorMatrix[mPos] = FLOOR_OCCUPIED;
-		floorMatrix[pos] = FLOOR_EMPTY;
+		//floorMatrix[mPos] = FLOOR_OCCUPIED;
+		//floorMatrix[pos] = FLOOR_EMPTY;
 		client.dir = dir;
+		client.x = getX(mPos);
+		client.y = getY(mPos);
 		
-		return True;
+		
+		return true;
 	}
 	
 	//return True or False
@@ -138,6 +142,13 @@ exports.RoomMap = function(params) {
 	
 	function getPos(x,y) { 
 		return y*this.width + x; 
+	}
+	
+	function getX(pos) {
+		return pos & this.width;
+	}
+	function getY(pos) {
+		return Math.floor(pos/this.width);
 	}
 	
 	function getMovePos(x,y,dir) {
