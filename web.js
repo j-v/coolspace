@@ -5,6 +5,7 @@ var express = require('express');
 var nowjs = require("now");
 var redis = require('redis-url').createClient(); //process.env.REDISTOGO_URL
 var room = require('./room.js')
+var auth = require('./auth.js')
 
 var app = express.createServer(express.logger(),
 				express.static(__dirname + '/public'));
@@ -44,19 +45,19 @@ function Avatar(params) {
 	throw NotImplementedException();
 }
 
-function Client(params) {
-	this.username = params.username;
-	this.x = params.x;
-	this.y = params.y;
-	this.avatar = params.avatar;
-}
+// function Client(params) {
+// 	this.profile = 
+// 	this.x = params.x;
+// 	this.y = params.y;
+// 	this.avatar = params.avatar;
+// }
 
 
 //TODO init roomMap
-roomMap = null;
+params={width:16,params:16,floorObjects:[],wallObjects:[]}
+roomMap = room.RoomMap(params); //TODO TEMP this is not how it will really work
 
-
-everyone.now.requestRoomData = function(room_id) {
+everyone.now.requestRoomData = function(cb) { //EVENTUALLY will have room id parameter
     //retrieve room data hash
     //retrieve cell list
     //retrieve wall object list
@@ -64,6 +65,8 @@ everyone.now.requestRoomData = function(room_id) {
     
     //client function
     //everyone.now.receiveRoomData(data,err);
+	users
+	cb({name:'1st room'});
 }
 
 everyone.now.sendUserAction = function(data) {
@@ -111,8 +114,9 @@ everyone.now.sendUserAction = function(data) {
 				// 					err = 'illegal move';
 				// 				}	
 
-				//TEST SKIP ALL VALIDATION
+				//TEST SKIP ALL VALIDATION TODO
 				var dir = data.params.dir;
+				room.move(userID,dir);
 				res.params = {dir: dir}
 				break;
 			case 'say':
@@ -124,17 +128,22 @@ everyone.now.sendUserAction = function(data) {
 				}
 				break;
 			case 'spawn':
-				if (roomMap.numClients >= MAX_CLIENTS) {
-					err = 'too many clients';
-				} else {
-					var pos = roomMap.getEmptyPos();
-					var x=pos[0], y = pos[1];
-					if (roomMap.spawn(userID,x,y)) {
-						res.params = {dir:SOUTH, x:x, y:y};
-					} else {
-						err = 'failed to spawn';
-					}
-				}
+				// if (roomMap.numClients >= MAX_CLIENTS) {
+				// 					err = 'too many clients';
+				// 				} else {
+				// 					var pos = roomMap.getEmptyPos();
+				// 					var x=pos[0], y = pos[1];
+				// 					if (roomMap.spawn(userID,x,y)) {
+				// 						res.params = {dir:SOUTH, x:x, y:y};
+				// 					} else {
+				// 						err = 'failed to spawn';
+				// 					}
+				// 				}
+				
+				//TEST SKIP ALL VALIDATION TODO
+				roomMap.spawn(userID,0,0);
+				res.params={dir:SOUTH,x:0,y:0};
+				
 				break;
 			case 'leave':
 				if (!roomMap.leave(userID)) {

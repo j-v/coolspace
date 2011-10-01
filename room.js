@@ -28,10 +28,10 @@ exports.RoomMap = function(params) {
 		wallMatrix.push(ROOM_EMPTY);
 	}
 	
-	//add objects to floor
-	throw NotImplementedException();
-	//add objects to wall
-	throw NotImplementedException();
+	//TODO add objects to floor
+	//throw NotImplementedException();
+	//TODO add objects to wall
+	//throw NotImplementedException();
 	
 	//init clients
 	clients = {}; //indexed by username
@@ -41,7 +41,8 @@ exports.RoomMap = function(params) {
 	this.spawn = function(who,x,y) {
 		//add to clients array
 		//update map
-		throw NotImplementedException();
+		client ={username:who,x:x,y:y};
+		clients['who'] = client;
 
 		this.numClients++;
 		return true;
@@ -50,7 +51,6 @@ exports.RoomMap = function(params) {
 	// return True or False
 	this.leave = function(who)
 	{
-		throw NotImplementedException();
 		
 		this.numClients--;
 		return true;
@@ -76,7 +76,13 @@ exports.RoomMap = function(params) {
 	// move the specified client in the direction, return True or False
 	this.move = function(who, dir) 
 	{
+		
+		
 		var client = clients[who];
+		
+		if (client == undefined)
+			return false; //TODO
+		
 		var x = client.x;
 		var y = client.y;
 		var pos = getPos(x,y);
@@ -141,3 +147,4 @@ exports.RoomMap = function(params) {
 		}
 	}
 }
+
