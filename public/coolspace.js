@@ -1,59 +1,39 @@
-function sendActionMove(dir) {
-	console.log(dir);
-	//floor.serverActionMove(userID, dir);
-	now.sendUserAction({
-		"userID": userID,
-		"action": "move",
-		"params": {"dir": dir}
-	});
-}
-
-function sendActionSay(s) {
-	console.log("message", s);
-		now.sendUserAction({
-			"userID": userID,
-			"action": "say",
-			"params": {"message": s}
-		});
-}
-
-now.receiveUserAction = function(data, err) {
-	if (err) {
-		console.log("Error received by now.receiveUserAction", err);
-		return;
-	}
-	switch (data.action) {
-		case "move":
-			floor.serverActionMove(data.userID, data.params.dir);
-			break;
-		case "spawn":
-			floor.serverActionSpawn(data.userID, data.params.x, data.params.y);
-			break;
-		case "say":
-			floor.serverActionSay(data.userID, data.params.message);
-			break;
-		case "leave":
-			floor.serverActionLeave();
-			break;
-		default:
-			console.log("Unrecognized server message in now.receiveUserAction", data.action);
-	
-	}
-}
-
+NORTH = 'N';
+SOUTH = 'S';
+EAST = 'E';
+WEST = 'W';
 
 $(init);
+var isRoomDataReceived = false;
 
 var gridSize = 40;
 var wall;
 var floor;
-var userID = "user1";
+var userID = "user" + Math.random();
 function init() {
 
 	wall = new WallMap('#map-container');
 	floor = new FloorMap('#map-container');
-	floor.addFurniture(1, 1, 3, 1, "table.png");
-	floor.addPlayerAvatar(4,1, "user1", "avatar.png");
+	floor.addFurniture(3, 3, 3, 1, "table.png");
+	
+	
+	//floor.addPlayerAvatar(4,1, "user1", "avatar.png");
+	//floor.addAvatar(5,1, "user2", "avatar.png");
+	
+	var chatinput = $('#chatinput');
+	var chatform = $('#chat');
+	
+	chatform.submit(function(ev) {	
+		ev.preventDefault();
+		if (!floor.playerAvatar) return;
+		var message = chatinput.val();
+		if (message.length > 0) {
+			chatinput.val("");
+			sendActionSay(message);
+		}
+	});
+	
+	joinRoomRequest(userID);
 
 }
 
@@ -61,7 +41,7 @@ function WallMap (container) {
 	this.init = function() {
 		this.container = container;
 		this.xdim = 10;
-		this.ydim = 6;
+		this.ydim = 3;
 
 		
 		this.elem = $('<div class="wall">').appendTo(container).css({
@@ -120,15 +100,21 @@ function FloorMap (container) {
 				}
 			}
 		}
+		for (var j in this.avatars) {
+			var a = this.avatars[j];
+			cells.push({x: a.x, y: a.y});
+		}
 		return cells;
 	
 	};
 	this.addPlayerAvatar = function(x, y, id, image) {
+		console.log("adding player");
 		if (this.playerAvatar) throw "Player avatar already exists";
 		this.playerAvatar = this.addAvatar(x, y, id, image);
 	};
 	
 	this.addAvatar = function(x, y, id, image) {
+		console.log("avatar added");
 		var av = new Avatar(this);
 		av.x = x;
 		av.y = y;
@@ -138,7 +124,7 @@ function FloorMap (container) {
 		av.heightmodifier = gridSize/2;
 		av.image = image;
 
-		this.objects.push(av);
+
 		this.avatars[id] = av;
 		av.update();
 		return av;
@@ -171,21 +157,21 @@ function FloorMap (container) {
 		if (x > y) {
 			if (x + y > 0) { 
 				// East
-				dir = "E";
+				dir = EAST;
 				ax++;
 			} else {
 				// North  
-				dir = "N";
+				dir = NORTH;
 				ay--;
 			}
 		} else {
 			if (x + y > 0) {
 				// South
-				dir = "S";
+				dir = SOUTH;
 				ay++;
 			} else {
 				// West
-				dir = "W";
+				dir = WEST;
 				ax--;
 			}
 		}
@@ -200,19 +186,19 @@ function FloorMap (container) {
 		console.log(this.avatars);
 		var av = this.avatars[id];
 		switch (dir) {
-			case "N":
+			case NORTH:
 				av.y--;
 				av.move();
 				break;
-			case "S":
+			case SOUTH:
 				av.y++;
 				av.move();
 				break;
-			case "E":
+			case EAST:
 				av.x++;
 				av.move();
 				break;
-			case "W":
+			case WEST:
 				av.x--;
 				av.move();
 				break;
@@ -220,15 +206,21 @@ function FloorMap (container) {
 	};
 	
 	this.serverActionSay = function(id, s) {
-		
+		this.avatars[id].sayBubble(s);
 	};
 	
-	this.serverActionSpawn = function(id, x, y) {
 	
+	this.serverActionSpawn = function(id, x, y) {
+		if (id == userID) {
+			// The spawn is about the player
+			this.addPlayerAvatar(x, y, id, "avatar.png");
+			return;
+		}
+		this.addAvatar(x, y, id, "avatar.png");
 	};
 	
 	this.serverActionLeave = function(id) {
-		
+		this.avatars[id] = null;
 	};
 	
 	
@@ -260,6 +252,7 @@ function CellObject() {
 		return $.extend({
 			"width": this.xdim * gridSize,
 			"height": this.ydim * gridSize + this.heightmodifier,
+			"z-index": this.y+1,
 			"background-image": "url(" + this.image + ")"
 		}, this.getOffsets());
 	};
@@ -319,7 +312,7 @@ function Avatar(map) {
 	this.move = function() {
 		
 		this.inTransit = true;
-		this.elem.animate(this.getOffsets(), 1000, 'linear', $.proxy(this, "moveComplete"));
+		this.elem.animate(this.getOffsets(), 600, 'linear', $.proxy(this, "moveComplete"));
 	}
 	
 	this.moveComplete = function() {
@@ -341,11 +334,11 @@ function Avatar(map) {
 		this.bubbleElem.text(text);
 
 		this.bubbleElem.css({
-			"left": avatarOffsets.left + gridSize/2 - this.bubbleElem.width()/2,
+			"left": avatarOffsets.left + gridSize/2 - this.bubbleElem.outerWidth()/2,
 			"bottom": avatarOffsets.bottom + gridSize * 2.5
 		});
 
-		this.bubbleTimer = setTimeout($.proxy(this, "onBubbleExpire"), 5000);
+		this.bubbleTimer = setTimeout($.proxy(this, "onBubbleExpire"), 3000);
 		
 	}
 	

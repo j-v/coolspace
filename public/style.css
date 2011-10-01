@@ -1,10 +1,12 @@
 .wall {
 	position: relative;
 	background-image: url(wall.png);
+	
 }
 .floor {
 	position: relative;
 	background-image: url(floor.png);
+	cursor: pointer;
 }
 
 
