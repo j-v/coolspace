@@ -16,7 +16,7 @@ function init() {
 	floor = new FloorMap('#map-container');
 	floor.addFurniture(7, 1, 2, 1, "couch.png");
 	floor.addFurniture(0, 4, 2, 1, "box.png");
-	floor.addFurniture(7, 4, 2, 1, "cards.png");
+	floor.addFurniture(7, 4, 1, 1, "cards.png");
 	floor.addFurniture(4, 3, 2, 1, "octopus.png");
 
 	//floor.addFurniture();
@@ -347,7 +347,7 @@ function Avatar(map) {
 
 		this.bubbleElem.css({
 			"left": avatarOffsets.left + gridSize/2 - this.bubbleElem.outerWidth()/2,
-			"bottom": avatarOffsets.bottom + gridSize * 2.5
+			"bottom": avatarOffsets.bottom + gridSize * 1.5
 		});
 
 		this.bubbleTimer = setTimeout($.proxy(this, "onBubbleExpire"), 3000);
