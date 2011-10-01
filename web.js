@@ -229,8 +229,8 @@ everyone.now.requestRoomData = function(cb) { //EVENTUALLY will have room id par
     
     //client function
     //everyone.now.receiveRoomData(data,err);
-	//var users = getRoom().getUsers();
-	cb({name:'1st room'});
+	var users = getRoom().getUsers();
+	cb({name:'1st room',users:users});
 }
 
 everyone.now.sendUserAction = function(data) {
@@ -287,9 +287,10 @@ everyone.now.sendUserAction = function(data) {
 				res = data;
 				res.timestamp = timestamp;				
 				//check message?
-				if (typeof(res.params) != 'string')	{ 
+				if (typeof(res.params.message) != 'string')	{ 
 					err = 'invalid message';
 				}
+				
 				break;
 			case 'spawn':
 				// if (roomMap.numClients >= MAX_CLIENTS) {
