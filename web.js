@@ -14,9 +14,9 @@ var auth = require('./auth.js')
 
 var app = express.createServer(express.logger(),
 				express.static(__dirname + '/public'));
-//var everyone = nowjs.initialize(app);
-var everyone = nowjs.initialize(app, 
-			{socketio: {transports: ['xhr-polling', 'jsonp-polling']}});
+var everyone = nowjs.initialize(app);
+//var everyone = nowjs.initialize(app, 
+//			{socketio: {transports: ['xhr-polling', 'jsonp-polling']}});
 
 //now.js test
 everyone.now.distributeMessage = function(message){
@@ -44,6 +44,7 @@ app.get('/test', function(req,res) {
 });
 
 var port = process.env.PORT || 3000;
+//var port = 8080;
 app.listen(port, function() {
   console.log("Listening on " + port);
 });
