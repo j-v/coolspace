@@ -3,7 +3,8 @@ SOUTH = 'S';
 EAST = 'E';
 WEST = 'W';
 
-$(init);
+//$(init);
+now.ready(init);
 var isRoomDataReceived = false;
 
 var gridSize = 60;
