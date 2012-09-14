@@ -222,7 +222,7 @@ function FloorMap (container) {
 			this.addPlayerAvatar(x, y, id, "afss.png");
 			return;
 		}
-		this.addAvatar(x, y, id, "avatar.png");
+		this.addAvatar(x, y, id, "afss.png");
 	};
 	
 	this.serverActionLeave = function(id) {

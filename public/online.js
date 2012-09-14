@@ -3,7 +3,14 @@ function joinRoomRequest() {
 	now.requestRoomData(function (obj) {
 		for (var i=0; i < obj.users.length; i++) {
 			var u = obj.users[i];
-			floor.addAvatar(u.x, u.y, u.username);
+			var image = 'afss.png';
+			switch (u.dir) {
+				case NORTH: image = 'afsn.png'; break;
+				case SOUTH: image = 'afss.png'; break;
+				case WEST: image = 'afsw.png'; break;
+				case EAST: image = 'afse.png'; break;
+			}
+			floor.addAvatar(u.x, u.y, u.username, image);
 		}
 		console.log("Joined room:", obj);
 		now.sendUserAction({

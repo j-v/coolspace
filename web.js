@@ -8,9 +8,9 @@ function NotImplementedException(){ };
 
 var express = require('express');
 var nowjs = require("now");
-var redis = require('redis-url').createClient(); //process.env.REDISTOGO_URL
+//var redis = require('redis-url').createClient(); //process.env.REDISTOGO_URL
 var room = require('./room.js')
-var auth = require('./auth.js')
+//var auth = require('./auth.js')
 
 var app = express.createServer(express.logger(),
 				express.static(__dirname + '/public'));
@@ -30,8 +30,8 @@ app.configure(function() {
     app.set('views', __dirname + '/views');
 });
 
-var title;
-redis.get('title',function(err,val) { title=val; });
+var title = "Coolspace";
+//redis.get('title',function(err,val) { title=val; });
 
 app.get('/', function(req,res) {
     res.render('index.jade',{title: title});

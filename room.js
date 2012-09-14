@@ -72,7 +72,7 @@ exports.RoomMap = function(params) {
 			var client = clients[who];
 			var x = client.x;
 			var y = client.y;
-			var mPos = getMovePos(x,y,dir);
+			var mPos = this.getMovePos(x,y,dir);
 			if (mPos<0 || mPos > floorMatrix.length || this.isOccupied(x,y) )
 				return false;
 			else
@@ -90,17 +90,23 @@ exports.RoomMap = function(params) {
 		
 		//if (client == undefined)
 		//	return false; //TODO
+		console.log('Before move' + JSON.stringify(client));
 		
 		var x = client.x;
 		var y = client.y;
-		var pos = getPos(x,y);
-		var mPos = getMovePos(x,y,dir);
+		var pos = this.getPos(x,y);
+		console.log('pos: ' + pos);
+		var mPos = this.getMovePos(x,y,dir);
+		console.log('movepos:' + mPos)
 		//floorMatrix[mPos] = FLOOR_OCCUPIED;
 		//floorMatrix[pos] = FLOOR_EMPTY;
 		client.dir = dir;
-		client.x = getX(mPos);
-		client.y = getY(mPos);
+		client.x = this.getX(mPos);
+		client.y = this.getY(mPos);
+
+		clients[who] = client; //test fix
 		
+		console.log('Move:' + JSON.stringify(client));
 		
 		return true;
 	}
@@ -117,14 +123,14 @@ exports.RoomMap = function(params) {
 		var oldy = client.y;
 		client.x = x;
 		client.y = y;
-		floorMatrix[getPos(x,y)=FLOOR_OCCUPIED];
-		floorMatrix[getPos(oldx,oldy)=FLOOR_EMPTY];
+		floorMatrix[this.getPos(x,y)=FLOOR_OCCUPIED];
+		floorMatrix[this.getPos(oldx,oldy)=FLOOR_EMPTY];
 		
 		return true;
 	}
 	
 	this.isOccupied = function(x,y) {
-		var pos = getPos(x,y);
+		var pos = this.getPos(x,y);
 		return (pos == ROOM_EMPTY);		
 	}
 	
@@ -140,28 +146,34 @@ exports.RoomMap = function(params) {
 		}
 	}
 	
-	function getPos(x,y) { 
+	this.getPos = function(x,y) { 
 		return y*this.width + x; 
 	}
 	
-	function getX(pos) {
-		return pos & this.width;
+	this.getX = function (pos) {
+		return pos % this.width;
 	}
-	function getY(pos) {
+	this.getY = function(pos) {
 		return Math.floor(pos/this.width);
 	}
 	
-	function getMovePos(x,y,dir) {
+	this.getMovePos = function(x,y,dir) {
 		switch (dir) {
 			case NORTH: 
-				return getPos(x,y-1);
+				return this.getPos(x,y-1);
 				break;
-			case SOUTH: break;
-				return getPos(x,y+1);
-			case EAST: break;
-				return getPos(x+1,y);
-			case WEST: break;
-				return getPos(x-1,y);
+			case SOUTH: 
+				return this.getPos(x,y+1);
+				break;
+			case EAST: 
+				return this.getPos(x+1,y);
+				   break;
+			case WEST: 
+				return this.getPos(x-1,y);
+				break;
+			default:
+				console.log("ERROR no direction");
 		}
+	
 	}
 }
